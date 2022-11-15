@@ -50,19 +50,36 @@ import java.util.Optional;
     public User update(int id, User updatedUser) {
         if (id > 0) {
             Optional<User> tempUser = this.show(id);
-            if (tempUser.isPresent())
+            if (tempUser.isPresent()) {
                 if (updatedUser.getNickname() != null)
                     tempUser.get().setNickname(updatedUser.getNickname());
-            if (updatedUser.getPassword() != null)
-                tempUser.get().setPassword(updatedUser.getPassword());
-            return this.userRepository.save(tempUser.get());
-        } else {
-            //TODO 404 NotFound
-            return updatedUser;
+                if (updatedUser.getPassword() != null)
+                    tempUser.get().setPassword(updatedUser.getPassword());
+                    return this.userRepository.save(tempUser.get());
+                } else {
+                    //TODO 404 NotFound
+                    return updatedUser;
+                }
+            } else {
+                //TODO   400 BadRequest, id <= 0
+                return updatedUser;
+            }
+        }
+        public boolean delete ( int id){
+            Boolean suceess = this.show(id).map(user -> {
+                this.userRepository.delete(user);
+                return true;
+            }).orElse(false);
+            return suceess;
+
         }
 
-    }
 }
+
+
+
+
+
 
 
 
